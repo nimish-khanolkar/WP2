@@ -8,7 +8,31 @@
  <script src="//code.jquery.com/jquery-1.9.1.js"></script>
  <script src="http://syddev.com/jquery.shadow/jquery.shadow/jquery.shadow.js"></script>
  <script src="public/resources/libraries/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.js"></script>
+
+<script>
+//function to Validate the form
+function Validate()
+	{
+		var isCorrect = true;
+		var a11=$('input[name=a11]').val();
+		var a22=$('input[name=a22]').val();
+		var a12=$('input[name=a12]').val();
+		var a21=$('input[name=a21]').val();
+		isCorrect=isCorrect&& (!isNaN(a11)) && (!(a11==null)&&(a11!=""));
+		isCorrect=isCorrect&& (!isNaN(a22)) && (!(a22==null)&&(a22!=""));
+		isCorrect=isCorrect&& (!isNaN(a12)) && (!(a12==null)&&(a12!=""));
+		isCorrect=isCorrect&& (!isNaN(a21)) && (!(a21==null)&&(a21!=""));
+		console.log(isCorrect);
+		if(isCorrect){
+			this.close();
+		}
+		return isCorrect;
+	}
+</script>
  </head>
+
+
+
  <body>
  <style>
   #feedback { font-size: 1.4em; }
@@ -41,6 +65,23 @@
  		 		 	 primary:"ui-icon-grip-solid-horizontal"
  		 		 	}
  		 });
+		$('#dialog').dialog(
+		{
+			width:400,
+			height:300,
+			autoOpen:false
+		}
+		);
+		$('#button_define').click(function(){
+			$('#dialog').dialog('open');
+		});
+		
+		$('#submit_button,#cancel_button').button();
+		
+		$('#cancel_button').on('click',function(){
+				$('#dialog').dialog('close');
+		});
+
 });
 </script>
 <div id='calc-container' class='ui-widget ui-corner-all'>
@@ -77,6 +118,25 @@
 	<button id='add'>X</button>
 	<button id='equal'>X</button>
 	</div>
+</div>
+
+<div id='dialog' title='Define New Matrix'>
+<form name='form1' id='form1'  method='get' onsubmit='return Validate(this);'>
+<fieldset>
+	<label for="Name">Name</label>
+	<input type='text' name='name' id='Name' class='whitepanes'><br>
+	<label for="a11">a11</label>
+	<input type="text" name='a11' id='a11' class='whitepanes number-field'><br>
+	<label for="a22">a22</label>
+	<input type="text" name='a22' id='a22' class='whitepanes number-field'><br>
+	<label for="a12">a12</label>
+	<input type="text" name='a12' id='a12' class='whitepanes number-field'><br>
+	<label for="a21">a21</label>
+	<input type="text" name='a21' id='a21' class='whitepanes number-field'><br>
+	<input type='submit' id='submit_button'  value='submit'>
+	<button id='cancel_button'>cancel</button>
+</fieldset>
+</form>
 </div>
 </body>
 </html>

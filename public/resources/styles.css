@@ -119,8 +119,17 @@ li { cursor: pointer; }
 	top:4px;
 	left:110px;
 }
+.number-field
+{
+width:50px;
+height:20px;
 
-
+}
+#dialog
+{
+width:400px;
+height:300px;
+}
 
 
 
