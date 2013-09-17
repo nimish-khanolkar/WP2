@@ -23,18 +23,102 @@ body
 	position:relative;
 	width: 500px;
 	height:300px;
-	top: 200px;
-	left: 350px;
+	top: 150px;
+	left: 400px;
 	
 }
 #loginContent{
 	width:100%;
 	height:100%;
 }
-
-
-
-
+#calc-container{
+	width:500px;
+	height:475px;
+	position:relative;
+	top:100px;
+	left:350px;
+	background-color:#424242;
+}
+#button_area
+{
+	width:150px;
+	height:200px;
+	position:relative;
+	top:10px;
+	left:10px;
+	background-color:white;
+}
+#defined_matrices
+{
+	width:150px;
+	height:240px;
+	position:relative;
+	top:20px;
+	left:10px;
+}
+li { cursor: pointer; }
+#display_container
+{
+	width: 320px;
+	height:80px;
+	position:absolute;
+	left:170px;
+	top:10px;
+}
+#display_pane
+{
+	position:absolute;
+	left:10px;
+	right:10px;
+	top:10px;
+	bottom:10px;
+}
+.white_panes
+{
+	background-color:white;
+}
+#result_container
+{
+	width: 320px;
+	height:300px;
+	position:absolute;
+	top:100px;
+	left:170px;
+}
+#result_pane
+{
+	position:absolute;
+	left:10px;
+	right:10px;
+	top:10px;
+	bottom:10px;
+}
+#op_bar
+{
+	width: 320px;
+	height:50px;
+	position: absolute;
+	top:410px;
+	left:170px;
+}
+#multiply
+{
+	position:absolute;
+	top:4px;
+	left:10px;
+}
+#add
+{
+	position:absolute;
+	top:4px;
+	left:60px;
+}
+#equal
+{
+	position:absolute;
+	top:4px;
+	left:110px;
+}
 
 
 

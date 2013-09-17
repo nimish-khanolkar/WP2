@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+ <head>
+ <title>CloudFront</title>
+ <link rel="stylesheet" type="text/css" href="http://syddev.com/jquery.shadow/jquery.shadow/jquery.shadow.css">
+ <link rel="stylesheet" type="text/css" href="public/resources/styles.css">
+ <link rel="stylesheet" href="public/resources/libraries/jquery-ui-1.10.3.custom/css/dark-hive/jquery-ui-1.10.3.custom.css">
+ <script src="//code.jquery.com/jquery-1.9.1.js"></script>
+ <script src="http://syddev.com/jquery.shadow/jquery.shadow/jquery.shadow.js"></script>
+ <script src="public/resources/libraries/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.js"></script>
+ </head>
+ <body>
+ <style>
+  #feedback { font-size: 1.4em; }
+  #selectable .ui-selecting { background: #FECA40; }
+  #selectable .ui-selected { background: #F39814; color: white; }
+  #selectable { list-style-type: none; margin: 0; padding: 0; width: 100px; }
+  #selectable li { margin: 3px; padding: 0.4em; font-size: 1.0em; height: 12px; }
+  </style>
+ <script>
+ $(document).ready(function(){
+ 		 $('#calc-container').shadow('raised');	 
+ 		 $('#button_define,#button_edit,#button_help').button({
+ 		 width:100});
+ 		 $('#selectable').selectable();
+ 		 $('#multiply').button({
+ 		 		 text:false,
+ 		 		 icons:{
+ 		 		 	 primary:"ui-icon-closethick"
+ 		 		 	}
+ 		 });
+ 		  $('#add').button({
+ 		 		 text:false,
+ 		 		 icons:{
+ 		 		 	 primary:"ui-icon-plusthick"
+ 		 		 	}
+ 		 });
+ 		  $('#equal').button({
+ 		 		 text:false,
+ 		 		 icons:{
+ 		 		 	 primary:"ui-icon-grip-solid-horizontal"
+ 		 		 	}
+ 		 });
+});
+</script>
+<div id='calc-container' class='ui-widget ui-corner-all'>
+	<!This is the button area div>
+	<div id='button_area' class='ui-widget-content'>
+	<button id='button_define' style='position:absolute; top: 25px; left:25px; width:100px'>Define</button>
+	<button id='button_edit' style='position: absolute; top:70px; left:25px; width:100px'>Edit</button>
+	<button id='button_help' style='position: absolute; top:115px; left:25px; width:100px'>Help</button>
+	</div>
+	<!This is the defined matrices div>
+	<div id='defined_matrices' class='ui-widget-content'>
+		<ul id='selectable' style="list-style-type:none; position:relative; left: 25px; top:10px">
+		<li class="ui-widget-content">M1</li>
+		<li class="ui-widget-content">M2</li>
+		<li class="ui-widget-content">M3</li>
+		<li class="ui-widget-content">M4</li>
+  	</ul>
+	
+	</div>
+	<! Display Container div starts>
+	<div id='display_container' class='ui-widget-content'>
+		<div id='display_pane' class='white_panes'>
+		</div>
+	</div>
+	<! results container div starts>
+	<div id='result_container' class='ui-widget-content'>
+		<div id='result_pane' class='white_panes'>
+		<p> result container</p>
+		</div>
+	</div>
+	<! operations pane starts here>
+	<div id='op_bar' class='ui-widget-content'>
+	<button id='multiply'>X</button>
+	<button id='add'>X</button>
+	<button id='equal'>X</button>
+	</div>
+</div>
+</body>
+</html>

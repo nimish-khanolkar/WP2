@@ -1,0 +1,9 @@
+{
+"name":"webproject1.1",
+"version":"0.0.1",
+"description":"Basic Practice Webproject using AWS",
+"dependencies":{
+	"mime":"~1.2.7"
+
+}
+}

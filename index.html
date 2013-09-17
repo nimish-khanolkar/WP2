@@ -1,18 +1,39 @@
 <!DOCTYPE html>
 <html>
  <head>
- <title>Introduction</title>
+ <title>CloudFront</title>
  <link rel="stylesheet" type="text/css" href="public/resources/styles.css">
- <link rel="stylesheet" href="public/resources/jquery-ui-1.10.3.custom/css/ui-darkness/jquery-ui-1.10.3.custom.css">
+ <link rel="stylesheet" href="public/resources/libraries/jquery-ui-1.10.3.custom/css/dark-hive/jquery-ui-1.10.3.custom.css">
  <script src="//code.jquery.com/jquery-1.9.1.js"></script>
- <script src="public/resources/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.js"></script>
+ <script src="public/resources/libraries/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.js"></script>
  </head>
  <body>
  <script>
+ $(document).ready(function(){
+ 	$('#loginContent').tabs();
+ 	$('input[type=submit]').button();
+ 	
+ });
  </script>
- <div id='login' class='ui-widget '>
- <div id='loginContent' class='ui-widget-content ui-corner-all'>
- <p>Login Div</p>
+ <div id='login'>
+ <div id='loginContent'>
+ 	<ul>
+ 		<li><a href="#tabs-1">Login</a></li>
+ 		<li><a href="#tabs-2">Contact Us</a></li>
+ 	</ul>
+  <div id="tabs-1">
+    <form>
+    	<br><br>Login:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<input type='text' name='login'><br>
+    	Password:<input type='password' name='passw'><br>
+    	<br><input type='submit' value='Log On'>
+    </form>
+    <br><a style='font-size:small' href='register.html'>Register</a>
+    &nbsp&nbsp&nbsp&nbsp<a style='font-size:small' href='forgotpassword.html'>Forgot Password?</a>
+  </div>
+  <div id="tabs-2">
+    <p>In Case of any queries, <a href="mailto:youremailaddress">Email Me</a>. 
+</p>
+  </div>
 </div>
  </div>
 </body>
