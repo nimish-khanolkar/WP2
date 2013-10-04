@@ -14,10 +14,18 @@
 function Validate()
 	{
 		var isCorrect = true;
+		var name=$('input[name=nameofmatrix]').val();
 		var a11=$('input[name=a11]').val();
 		var a22=$('input[name=a22]').val();
 		var a12=$('input[name=a12]').val();
 		var a21=$('input[name=a21]').val();
+		var name_regex = /[a-zA-Z0-9_]/;
+		isCorrect = name_regex.test(name);
+		
+		var name_check=true;
+		if(!isCorrect)
+			name_check=false;
+			
 		isCorrect=isCorrect&& (!isNaN(a11)) && (!(a11==null)&&(a11!=""));
 		isCorrect=isCorrect&& (!isNaN(a22)) && (!(a22==null)&&(a22!=""));
 		isCorrect=isCorrect&& (!isNaN(a12)) && (!(a12==null)&&(a12!=""));
@@ -25,7 +33,14 @@ function Validate()
 		console.log(isCorrect);
 		if(isCorrect){
 			this.close();
+		} else
+		{
+			if(!name_check)
+				$('#tip').html("<p style='color:red; font-size:small'>Name should only contain letters,numbers and underscores</p>");
+			else
+				$('#tip').html("<p style='color:red; font-size:small'>matrix elements should only contain numbers</p>");
 		}
+		
 		return isCorrect;
 	}
 </script>
@@ -74,6 +89,7 @@ function Validate()
 		);
 		$('#button_define').click(function(){
 			$('#dialog').dialog('open');
+			$('#tip').html("<p style='color:red; font-size:small'>All fields are mandatory</p>");
 		});
 		
 		$('#submit_button,#cancel_button').button();
@@ -124,7 +140,7 @@ function Validate()
 <form name='form1' id='form1'  method='get' onsubmit='return Validate(this);'>
 <fieldset>
 	<label for="Name">Name</label>
-	<input type='text' name='name' id='Name' class='whitepanes'><br>
+	<input type='text' name='nameofmatrix' id='Name' class='whitepanes'><br>
 	<label for="a11">a11</label>
 	<input type="text" name='a11' id='a11' class='whitepanes number-field'><br>
 	<label for="a22">a22</label>
@@ -137,6 +153,7 @@ function Validate()
 	<button id='cancel_button'>cancel</button>
 </fieldset>
 </form>
+<p id='tip' style='color:red;'><i>All fields are required</i></p>
 </div>
 </body>
 </html>
