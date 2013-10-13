@@ -19,34 +19,31 @@ function Validate()
 		var a22=$('input[name=a22]').val();
 		var a12=$('input[name=a12]').val();
 		var a21=$('input[name=a21]').val();
-		var name_regex = /[a-zA-Z0-9_]/;
+		var name_regex = /^[a-zA-Z0-9_]{1,8}$/;
+		console.log('the name is',name);
 		isCorrect = name_regex.test(name);
-		
+		console.log('after regex testing',isCorrect);
 		var name_check=true;
-		if(!isCorrect)
-			name_check=false;
+		if(!isCorrect){
+			name_check=false;}
 			
 		isCorrect=isCorrect&& (!isNaN(a11)) && (!(a11==null)&&(a11!=""));
 		isCorrect=isCorrect&& (!isNaN(a22)) && (!(a22==null)&&(a22!=""));
 		isCorrect=isCorrect&& (!isNaN(a12)) && (!(a12==null)&&(a12!=""));
 		isCorrect=isCorrect&& (!isNaN(a21)) && (!(a21==null)&&(a21!=""));
-		console.log(isCorrect);
-		if(isCorrect){
-			this.close();
-		} else
-		{
+		
+		if(!isCorrect){
 			if(!name_check)
 				$('#tip').html("<p style='color:red; font-size:small'>Name should only contain letters,numbers and underscores</p>");
 			else
 				$('#tip').html("<p style='color:red; font-size:small'>matrix elements should only contain numbers</p>");
 		}
-		
 		return isCorrect;
 	}
+	
+	
 </script>
- </head>
-
-
+</head>
 
  <body>
  <style>
@@ -97,6 +94,20 @@ function Validate()
 		$('#cancel_button').on('click',function(){
 				$('#dialog').dialog('close');
 		});
+		
+		$('#submit_button').click(function(event){
+			event.preventDefault();
+			var name=$('input[name=nameofmatrix]').val();
+			//Validate is a function which returns a bool if validation proceeds correctly
+			var isCorrect = Validate();
+			if(isCorrect){
+			//if validated correctly then add to list				
+				$('#form1').submit();	
+				//$('#dialog').dialog('close');
+				$('#selectable').append("<li class='ui-widget-content'>"+name+"</li>");	
+			} 
+		
+		});
 
 });
 </script>
@@ -135,24 +146,24 @@ function Validate()
 	<button id='equal'>X</button>
 	</div>
 </div>
-
+<! onsubmit='return Validate(this);'>
 <div id='dialog' title='Define New Matrix'>
-<form name='form1' id='form1'  method='get' onsubmit='return Validate(this);'>
-<fieldset>
-	<label for="Name">Name</label>
-	<input type='text' name='nameofmatrix' id='Name' class='whitepanes'><br>
-	<label for="a11">a11</label>
-	<input type="text" name='a11' id='a11' class='whitepanes number-field'><br>
-	<label for="a22">a22</label>
-	<input type="text" name='a22' id='a22' class='whitepanes number-field'><br>
-	<label for="a12">a12</label>
-	<input type="text" name='a12' id='a12' class='whitepanes number-field'><br>
-	<label for="a21">a21</label>
-	<input type="text" name='a21' id='a21' class='whitepanes number-field'><br>
-	<input type='submit' id='submit_button'  value='submit'>
-	<button id='cancel_button'>cancel</button>
-</fieldset>
-</form>
+	<form name='form1' id='form1'  method='post'>
+	<fieldset>
+		<label for="Name">Name</label>
+		<input type='text' name='nameofmatrix' id='Name' class='whitepanes'><br>
+		<label for="a11">a11</label>
+		<input type="text" name='a11' id='a11' class='whitepanes number-field'><br>
+		<label for="a22">a22</label>
+		<input type="text" name='a22' id='a22' class='whitepanes number-field'><br>
+		<label for="a12">a12</label>
+		<input type="text" name='a12' id='a12' class='whitepanes number-field'><br>
+		<label for="a21">a21</label>
+		<input type="text" name='a21' id='a21' class='whitepanes number-field'><br>
+		<button id='submit_button'>Submit</button>
+		<button id='cancel_button'>cancel</button>
+	</fieldset>
+	</form>
 <p id='tip' style='color:red;'><i>All fields are required</i></p>
 </div>
 </body>
