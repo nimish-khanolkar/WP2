@@ -1,8 +1,9 @@
 //3rd Oct, Basic Matrix Class
 //Nimish Prabhukhanolkar
 var Matrix = function(spec){
-	this.rows = spec.rows;
-	this.cols = spec.cols;
+	this.name = spec.name;
+	this.rows = spec.rows||3;
+	this.cols = spec.cols||3;
 	this.mat = new Array(this.rows);
 	for(var i=0;i< this.rows;i++){
 		this.mat[i]=new Array(spec.cols);	
@@ -18,7 +19,12 @@ var Matrix = function(spec){
 		}
 	}
 }
+//get name of the matrix
+Matrix.prototype.getName=function(){
+	return this.name;
+}
 //get the Data of the matrix
+
 Matrix.prototype.getData=function(i,j){
 	return this.mat[i][j];
 }
@@ -100,23 +106,23 @@ alpha2=alpha2||1;
 }
 
 module.exports = Matrix ;
-var spec = {rows:2,cols:3};
-var spec1 = {rows:3, cols:5};
-var spec2={rows:3,cols:5};
-var mat1 = new Matrix(spec);
-var mat2 = new Matrix(spec1);
-var mat3 = new Matrix(spec2);
-mat1.setData(1,2,5.333);
-mat2.setData(2,1,0.1);
-mat2.setData(2,1,0.1);
-mat2.setData(2,3,-0.5);
-mat1.setData(0,1,100);
-var mat4 = mat2.add(mat3,100,-100);
-console.log("mat2");
-mat2.displayMatrix();
-console.log("mat3");
-mat3.displayMatrix();
-console.log("mat4");
-mat4.displayMatrix();
-
-//mat1.displayMatrix();
+// var spec = {rows:2,cols:3};
+// var spec1 = {rows:3, cols:5};
+// var spec2={rows:3,cols:5};
+// var mat1 = new Matrix(spec);
+// var mat2 = new Matrix(spec1);
+// var mat3 = new Matrix(spec2);
+// mat1.setData(1,2,5.333);
+// mat2.setData(2,1,0.1);
+// mat2.setData(2,1,0.1);
+// mat2.setData(2,3,-0.5);
+// mat1.setData(0,1,100);
+// var mat4 = mat2.add(mat3,100,-100);
+// console.log("mat2");
+// mat2.displayMatrix();
+// console.log("mat3");
+// mat3.displayMatrix();
+// console.log("mat4");
+// mat4.displayMatrix();
+// 
+// //mat1.displayMatrix();

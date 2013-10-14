@@ -1,18 +1,18 @@
-var http = require('http'),
+var server = require("http").createServer(handler),
 path = require("path"),
 url = require("url"),
 fs = require("fs"),
-mime = require("mime");
+mime = require("mime"),
+io = require("socket.io").listen(server);
+server.listen(3000);
 var homepath = ".";
-var port =80;
-var server = http.createServer(function(req, res){
+function handler (req, res){
    var uri = url.parse(req.url).pathname;
    var filepath = path.join(homepath,uri);
 	console.log(filepath);
    path.exists(filepath,function(exists){
        if(!exists)
        {
-	 console.log('request for a nonexisting file');	
            //404 response
            res.writeHead(404,{"Content-Type":"text/plain"});
            res.write("404 File not Found \n");
@@ -32,8 +32,6 @@ var server = http.createServer(function(req, res){
            }
            else {
                var contentType = mime.lookup(filepath);
-		console.log("i reached the res.writehead\n");
-		console.log('content-type',contentType);
                res.writeHead(200,{'Content-Type':contentType});
                res.write(data,'binary');
                res.end();
@@ -41,8 +39,21 @@ var server = http.createServer(function(req, res){
        });
        }  
    });
-});
-server.listen(3000);
+   		   
+   }
+
+   //sockets part starts here
+   io.sockets.on('connection',function(socket){
+   		   socket.on('test',function(data){
+   		   		   console.log('i got something');
+   				   console.log(data.print);
+   		   });
+   		   
+   		   socket.emit('gotcha',{message:"Hello World"});
+   });
+   
+   
+   
 server.on('error', function(e){
     console.log(e);
 });
