@@ -58,11 +58,11 @@ function Validate()
  <script>
  //creating a socket to the server
 var socket = io.connect("http://localhost:3000");
-socket.emit('test',{print:'connected to server'});
+/* socket.emit('test',{print:'connected to server'});
 socket.on('gotcha',function(data){
 		console.log('gotcha fired');
 		console.log('I caught server data' + data.message);		
-	});
+	}); */
 
  $(document).ready(function(){
  		 $('#calc-container').shadow('raised');	 
@@ -102,6 +102,7 @@ socket.on('gotcha',function(data){
 		$('#submit_button,#cancel_button').button();
 		
 		$('#cancel_button').on('click',function(){
+				event.preventDefault();
 				$('#dialog').dialog('close');
 		});
 		
@@ -111,10 +112,17 @@ socket.on('gotcha',function(data){
 			//Validate is a function which returns a bool if validation proceeds correctly
 			var isCorrect = Validate();
 			if(isCorrect){
-			//if validated correctly then add to list				
-				$('#form1').submit();	
-				//$('#dialog').dialog('close');
-				$('#selectable').append("<li class='ui-widget-content'>"+name+"</li>");	
+				//create an object to be submitted to client
+				var spec ={
+					name:$('input[name=nameofmatrix]').val(),
+					a11:$('input[name=a11]').val(),
+					a12:$('input[name=a12]').val(),
+					a21:$('input[name=a21]').val(),
+					a22:$('input[name=a22]').val(),
+				};
+				socket.emit('submitF',spec);
+				$('#selectable').append("<li class='ui-widget-content'>"+name+"</li>");
+				$('#dialog').dialog('close');
 			} 
 		
 		});
@@ -131,10 +139,6 @@ socket.on('gotcha',function(data){
 	<!This is the defined matrices div>
 	<div id='defined_matrices' class='ui-widget-content'>
 		<ul id='selectable' style="list-style-type:none; position:relative; left: 25px; top:10px">
-		<li class="ui-widget-content">M1</li>
-		<li class="ui-widget-content">M2</li>
-		<li class="ui-widget-content">M3</li>
-		<li class="ui-widget-content">M4</li>
   	</ul>
 	
 	</div>

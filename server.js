@@ -3,9 +3,11 @@ path = require("path"),
 url = require("url"),
 fs = require("fs"),
 mime = require("mime"),
+matrix = require("./serverScripts/matrix.js"),
 io = require("socket.io").listen(server);
 server.listen(3000);
 var homepath = ".";
+var listofMatrices = [];
 function handler (req, res){
    var uri = url.parse(req.url).pathname;
    var filepath = path.join(homepath,uri);
@@ -38,20 +40,20 @@ function handler (req, res){
            }
        });
        }  
-   });
-   		   
+   });		   
    }
-
    //sockets part starts here
    io.sockets.on('connection',function(socket){
-   		   socket.on('test',function(data){
-   		   		   console.log('i got something');
-   				   console.log(data.print);
+   	//event of matrix submission for input	  
+   		   socket.on('submitF',function(matrix){
+   		   		listofMatrices.push(matrix); 
+   		   		console.log('Matrix added. Array length is'+listofMatrices.length);
    		   });
    		   
-   		   socket.emit('gotcha',{message:"Hello World"});
-   });
+   	
    
+   
+   });
    
    
 server.on('error', function(e){
