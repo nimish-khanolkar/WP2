@@ -16,29 +16,47 @@
 function Validate()
 	{
 		var isCorrect = true;
+		var isNumber=true;
+		var duplicate_name=false;
+		var namedCorrect = true;
 		var name=$('input[name=nameofmatrix]').val();
 		var a11=$('input[name=a11]').val();
 		var a22=$('input[name=a22]').val();
 		var a12=$('input[name=a12]').val();
 		var a21=$('input[name=a21]').val();
 		var name_regex = /^[a-zA-Z0-9_]{1,8}$/;
-		console.log('the name is',name);
-		isCorrect = name_regex.test(name);
-		console.log('after regex testing',isCorrect);
-		var name_check=true;
-		if(!isCorrect){
-			name_check=false;}
+		//console.log('the name is',name);
+		//check for correct name characters
+		namedCorrect = name_regex.test(name);
+		console.log('after regex testing',namedCorrect);
+		if(!namedCorrect){
+			isCorrect=false;}
 			
-		isCorrect=isCorrect&& (!isNaN(a11)) && (!(a11==null)&&(a11!=""));
-		isCorrect=isCorrect&& (!isNaN(a22)) && (!(a22==null)&&(a22!=""));
-		isCorrect=isCorrect&& (!isNaN(a12)) && (!(a12==null)&&(a12!=""));
-		isCorrect=isCorrect&& (!isNaN(a21)) && (!(a21==null)&&(a21!=""));
+		//check for duplicate name
+			$('#selectable li').each(function(){
+					if($(this).text()==name){
+						duplicate_name=true;
+						isCorrect = false;
+					}
+			});
+		//check for being a number	
+		isNumber=isNumber&& (!isNaN(a11)) && (!(a11==null)&&(a11!=""));
+		isNumber=isNumber&& (!isNaN(a22)) && (!(a22==null)&&(a22!=""));
+		isNumber=isNumber&& (!isNaN(a12)) && (!(a12==null)&&(a12!=""));
+		isNumber=isNumber&& (!isNaN(a21)) && (!(a21==null)&&(a21!=""));
 		
+		if(!isNumber){
+			isCorrect=false;
+			}
+		
+			//error reporting and return
 		if(!isCorrect){
-			if(!name_check)
+			if(!namedCorrect)
 				$('#tip').html("<p style='color:red; font-size:small'>Name should only contain letters,numbers and underscores</p>");
-			else
+			if(!isNumber)
 				$('#tip').html("<p style='color:red; font-size:small'>matrix elements should only contain numbers</p>");
+			if(duplicate_name)
+				$('#tip').html("<p style='color:red; font-size:small'>Duplicate name. Please select a different name</p>");
 		}
 		return isCorrect;
 	}
@@ -65,10 +83,14 @@ socket.on('gotcha',function(data){
 	}); */
 
  $(document).ready(function(){
+ 		 //define shadow
  		 $('#calc-container').shadow('raised');	 
+ 		 //define the "Define" "Edit" and "Help" buttons
  		 $('#button_define,#button_edit,#button_help').button({
  		 width:100});
+ 		 //Create selectable list
  		 $('#selectable').selectable();
+ 		 //Define the multiple add and equal button
  		 $('#multiply').button({
  		 		 text:false,
  		 		 icons:{
@@ -88,11 +110,11 @@ socket.on('gotcha',function(data){
  		 		 	}
  		 });
 		$('#dialog').dialog(
-		{
-			width:400,
-			height:300,
-			autoOpen:false
-		}
+			{
+				width:400,
+				height:300,
+				autoOpen:false
+			}
 		);
 		$('#button_define').click(function(){
 			$('#dialog').dialog('open');
@@ -105,7 +127,7 @@ socket.on('gotcha',function(data){
 				event.preventDefault();
 				$('#dialog').dialog('close');
 		});
-		
+		//code for providing submit functionality
 		$('#submit_button').click(function(event){
 			event.preventDefault();
 			var name=$('input[name=nameofmatrix]').val();
@@ -125,6 +147,22 @@ socket.on('gotcha',function(data){
 				$('#dialog').dialog('close');
 			} 
 		
+		});
+		//code for providing edit functionality
+		$('#button_edit').click(function(event){
+			event.preventDefault();
+			var selectedItem = -1;
+			selectedItem = $('#selectable .ui-selected').text();
+			console.log(selectedItem);
+			
+			if(selectedItem!=-1){
+			socket.emit('edit',selectedItem);
+			}
+				
+		});
+		//events coming from the server
+		socket.on('editedMatrix',function(spec){
+				console.log(spec);
 		});
 
 });

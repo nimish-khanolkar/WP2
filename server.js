@@ -42,16 +42,66 @@ function handler (req, res){
        }  
    });		   
    }
+   //helper function to convert Data Matrix object to server Matrix object. Returns Matrix.
+  
+   function convertspecToMatrix(spec){
+   	   
+   	   var temp_matrix = new matrix({name:spec.name,rows:2,cols:2});
+   	   temp_matrix.setData(0,0,spec.a11);
+   	   temp_matrix.setData(1,0,spec.a12);
+   	   temp_matrix.setData(0,1,spec.a21);
+   	   temp_matrix.setData(1,1,spec.a22);		   
+   	   return temp_matrix;
+   }
+   
+   function convertMatrixtoSpec(matrix){
+   	   var spec = { name:this.name, 
+   	   a11: matrix.getData(0,0), 
+   	   a12: matrix.getData(0,1),
+   	   a21:matrix.getData(1,0),
+   	   a22:matrix.getData(1,1)
+   	   };
+   	   return spec;
+   }
+   function getMatrix(name){
+   	   
+   	   for( var i = 0; i<listofMatrices.length;i++){
+   	   	   if(listofMatrices[i].name == name)
+   	   	   {	
+   	   	   	   return listofMatrices[i];
+   	   	   }
+   	   }
+   	   return "NF";
+   	    
+   }
+   
+   
+   //helper function to retrieve a matrix object from array and send it back. Returns matrix.
    //sockets part starts here
    io.sockets.on('connection',function(socket){
    	//event of matrix submission for input	  
    		   socket.on('submitF',function(matrix){
-   		   		listofMatrices.push(matrix); 
+   		   		var temp = convertspecToMatrix(matrix);
+   		   		temp.displayMatrix();
+   		   		listofMatrices.push(temp); 
    		   		console.log('Matrix added. Array length is'+listofMatrices.length);
+   		   		
    		   });
    		   
-   	
-   
+   		   socket.on('edit', function(name){
+   		   		   console.log('selected matrix is' + name);
+   		   		   var selectedMatrix = getMatrix(name);
+   		   		   if(selectedMatrix!="NF"){
+   		   		   	   
+   		   		   	   var spec = convertMatrixtoSpec(selectedMatrix);
+   		   		   	   socket.emit('editedMatrix',spec);
+   		   		   }
+   		   		   else {
+   		   		   	   socket.emit('error',"Matrix Not Found!!");
+   		   		   	   console.log('Matrix not found!!');
+   		   		   }
+   		   		   
+   		   });
    
    });
    
