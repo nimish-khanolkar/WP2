@@ -74,6 +74,15 @@ function handler (req, res){
    	   return "NF";
    	    
    }
+   function getIndex(name){
+   	   for( var i = 0; i<listofMatrices.length;i++){
+   	   	   if(listofMatrices[i].name == name)
+   	   	   {	
+   	   	   	   return i;
+   	   	   }
+   	   }
+   	   return "NF";
+   }
    
    
    //helper function to retrieve a matrix object from array and send it back. Returns matrix.
@@ -90,10 +99,11 @@ function handler (req, res){
    		   
    		   socket.on('edit', function(name){
    		   		   console.log('selected matrix is' + name);
-   		   		   var selectedMatrix = getMatrix(name);
+   		   		   var selectedMatrix = getMatrix(name)	;
    		   		   if(selectedMatrix!="NF"){
    		   		   	   
    		   		   	   var spec = convertMatrixtoSpec(selectedMatrix);
+   		   		   	   spec.name = name;
    		   		   	   socket.emit('editedMatrix',spec);
    		   		   }
    		   		   else {
@@ -101,6 +111,20 @@ function handler (req, res){
    		   		   	   console.log('Matrix not found!!');
    		   		   }
    		   		   
+   		   });
+   		   
+   		   socket.on('editMatrix',function(spec){
+   		   	//this is the event for updating an edited matrix	   
+   		   	var newMatrix = convertspecToMatrix(spec);
+   		   	var index = getIndex(spec.name);
+   		   	console.log("matrix come for updation number"+index);
+   		   	if(index!='NF')
+   		   		listofMatrices[index]=newMatrix;
+   		   	else {
+   		   		   	   socket.emit('error',"Matrix Not Found!!");
+   		   		   	   console.log('Matrix not found!!');
+   		   		}
+   		   		
    		   });
    
    });

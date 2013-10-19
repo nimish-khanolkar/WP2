@@ -13,32 +13,41 @@
 <script>
 
 //function to Validate the form
-function Validate()
+function Validate(idofform)
 	{
 		var isCorrect = true;
 		var isNumber=true;
 		var duplicate_name=false;
 		var namedCorrect = true;
-		var name=$('input[name=nameofmatrix]').val();
-		var a11=$('#form1 input[name=a11]').val();
-		var a22=$('#form1 input[name=a22]').val();
-		var a12=$('#form1 input[name=a12]').val();
-		var a21=$('#form1 input[name=a21]').val();
-		var name_regex = /^[a-zA-Z0-9_]{1,8}$/;
-		//console.log('the name is',name);
-		//check for correct name characters
-		namedCorrect = name_regex.test(name);
-		console.log('after regex testing',namedCorrect);
-		if(!namedCorrect){
-			isCorrect=false;}
+		if(idofform=='form1'){
 			
-		//check for duplicate name
+		// form1 has name attribute
+			var name=$('input[name=nameofmatrix]').val();
+			//check for correct name characters
+			var name_regex = /^[a-zA-Z0-9_]{1,8}$/;
+			namedCorrect = name_regex.test(name);
+			//console.log('after regex testing',namedCorrect);
+			if(!namedCorrect){
+				isCorrect=false;}
+				
+				//check for duplicate name for new definition
+		
 			$('#selectable li').each(function(){
 					if($(this).text()==name){
 						duplicate_name=true;
 						isCorrect = false;
 					}
 			});
+		}
+		var a11=$('#' + idofform + " input[name=a11]").val();
+		var a22=$('#' + idofform + " input[name=a22]").val();
+		var a12=$('#' + idofform + " input[name=a12]").val();
+		var a21=$('#' + idofform + " input[name=a21]").val();
+		console.log('validate inside'+ a11 );
+		//console.log('the name is',name);
+		
+			
+		
 		//check for being a number	
 		isNumber=isNumber&& (!isNaN(a11)) && (!(a11==null)&&(a11!=""));
 		isNumber=isNumber&& (!isNaN(a22)) && (!(a22==null)&&(a22!=""));
@@ -48,15 +57,19 @@ function Validate()
 		if(!isNumber){
 			isCorrect=false;
 			}
-		
+		console.log('isnumber'+isNumber);
+		console.log('isCorrect' + isCorrect);
 			//error reporting and return
 		if(!isCorrect){
+			console.log("i am inside");
+			var temp = '#' + idofform + '_tip';
+			console.log('selector '+temp);
 			if(!namedCorrect)
-				$('#tip').html("<p style='color:red; font-size:small'>Name should only contain letters,numbers and underscores</p>");
+				$(temp).html("<p style='color:red; font-size:small'>Name should only contain letters,numbers and underscores</p>");
 			if(!isNumber)
-				$('#tip').html("<p style='color:red; font-size:small'>matrix elements should only contain numbers</p>");
+				$(temp).html("<p style='color:red; font-size:small'>matrix elements should only contain numbers</p>");
 			if(duplicate_name)
-				$('#tip').html("<p style='color:red; font-size:small'>Duplicate name. Please select a different name</p>");
+				$(temp).html("<p style='color:red; font-size:small'>Duplicate name. Please select a different name</p>");
 		}
 		return isCorrect;
 	}
@@ -128,30 +141,37 @@ socket.on('gotcha',function(data){
 		
 		$('#button_define').click(function(){
 			$('#dialog').dialog('open');
-			$('#tip').html("<p style='color:red; font-size:small'>All fields are mandatory</p>");
+			$('#dialog_tip').html("<p style='color:red; font-size:small'>All fields are mandatory</p>");
 		});
 		
-		$('#submit_button,#cancel_button').button();
+		$('#submit_button,#cancel_button,#editsubmit_button,#editcancel_button').button();
 		
 		$('#cancel_button').on('click',function(){
 				event.preventDefault();
 				$('#dialog').dialog('close');
+		});
+		
+		$('#editcancel_button').on('click',function(){
+				event.preventDefault();
+				$('#dialog2').dialog('close');
 		});
 		//code for providing submit functionality
 		$('#submit_button').click(function(event){
 			event.preventDefault();
 			var name=$('input[name=nameofmatrix]').val();
 			//Validate is a function which returns a bool if validation proceeds correctly
-			var isCorrect = Validate();
+			var isCorrect = Validate('form1');
 			if(isCorrect){
 				//create an object to be submitted to client
 				var spec ={
-					name:$('input[name=nameofmatrix]').val(),
-					a11:$('input[name=a11]').val(),
-					a12:$('input[name=a12]').val(),
-					a21:$('input[name=a21]').val(),
-					a22:$('input[name=a22]').val(),
+					name:$('#form1 input[name=nameofmatrix]').val(),
+					a11:$('#form1 input[name=a11]').val(),
+					a12:$('#form1 input[name=a12]').val(),
+					a21:$('#form1 input[name=a21]').val(),
+					a22:$('#form1 input[name=a22]').val(),
 				};
+				//var form = $('#form1');
+				//console.log(form);
 				socket.emit('submitF',spec);
 				$('#selectable').append("<li class='ui-widget-content'>"+name+"</li>");
 				$('#dialog').dialog('close');
@@ -163,27 +183,60 @@ socket.on('gotcha',function(data){
 			event.preventDefault();
 			var selectedItem = -1;
 			selectedItem = $('#selectable .ui-selected').text();
-			console.log(selectedItem);
+			//console.log(selectedItem);
 			
 			if(selectedItem!=-1){
 			//emit the event to get selected items attributes
 			socket.emit('edit',selectedItem);
 			
 			//catch the servers response with data
+
+			}	
+		});
+		
 			socket.on('editedMatrix',function(spec){
 				console.log(spec);
 				$('#dialog_edit').dialog('open');
-				$('#tip').html("<p style='color:red; font-size:small'>All fields are mandatory</p>");
+				
+				$('#dialog_edit').dialog('option', 'title', spec.name);
+				$('#tip1').html("<p style='color:red; font-size:small'>All fields are mandatory</p>");
+				$('#form2 input[name=name]').val(spec.nameofmatrix);
 				$('#form2 input[name=a11]').val(spec.a11);
 				$('#form2 input[name=a12]').val(spec.a12);
 				$('#form2 input[name=a21]').val(spec.a21);
 				$('#form2 input[name=a22]').val(spec.a22);
 				
+				
+				
+				/*$('#editsubmit_button').on('click',function(){
+						event.preventDefault();
+						console.log('spec name is'+spec.name);
+				});*/
+				
+				
 			});
-
-			}	
+		
+		$('#editsubmit_button').on('click',function(){
+				event.preventDefault();
+				if(Validate('form2')){
+					var name=$('#dialog_edit').dialog('option','title'),
+					a11 = $('#form2 input[name=a11]').val(),
+					a12 = $('#form2 input[name=a12]').val(),
+					a21 = $('#form2 input[name=a21]').val(),
+					a22 = $('#form2 input[name=a22]').val();
+				
+						var spec = {
+							name:name,
+							a11:a11,
+							a12:a12,
+							a21:a21,
+							a22:a22,
+						};
+					socket.emit('editMatrix',spec);
+					$('#dialog_edit').dialog('close');
+				}
 		});
-		//events coming from the server
+		
 		
 
 });
@@ -237,26 +290,29 @@ socket.on('gotcha',function(data){
 		<button id='cancel_button'>cancel</button>
 	</fieldset>
 	</form>
-<p id='tip' style='color:red;'><i>All fields are required</i></p>
+<p id='form1_tip' style='color:red;'><i>All fields are required</i></p>
 </div>
 
 <! this is the edit dialog>
 <div id='dialog_edit'>
 	<form name='form2' id='form2'>
+	<br>
 	<fieldset>
-		<label for="a11">a11</label>
-		<input type="text" name='a11' id='a11' class='whitepanes number-field'><br>
-		<label for="a22">a22</label>
-		<input type="text" name='a22' id='a22' class='whitepanes number-field'><br>
-		<label for="a12">a12</label>
-		<input type="text" name='a12' id='a12' class='whitepanes number-field'><br>
-		<label for="a21">a21</label>
-		<input type="text" name='a21' id='a21' class='whitepanes number-field'><br>
+		
+		<label for="a11e">a11</label>
+		<input type="text" name='a11' id='a11e' class='whitepanes number-field'><br>
+		<label for="a22e">a22</label>
+		<input type="text" name='a22' id='a22e' class='whitepanes number-field'><br>
+		<label for="a12e">a12</label>
+		<input type="text" name='a12' id='a12e' class='whitepanes number-field'><br>
+		<label for="a21e">a21</label>
+		<input type="text" name='a21' id='a21e' class='whitepanes number-field'><br>
+		<br>
 		<button id='editsubmit_button'>OK</button>
-		<button id='editcancel_button'>cancel</button>
+		<button id='editcancel_button'>Cancel</button>
 	</fieldset>
 	</form>
-<p id='tip' style='color:red;'><i>All fields are required</i></p>
+<p id='form2_tip' style='color:red;'><i>All fields are required</i></p>
 </div>
 
 </body>
