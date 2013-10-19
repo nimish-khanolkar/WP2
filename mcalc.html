@@ -20,10 +20,10 @@ function Validate()
 		var duplicate_name=false;
 		var namedCorrect = true;
 		var name=$('input[name=nameofmatrix]').val();
-		var a11=$('input[name=a11]').val();
-		var a22=$('input[name=a22]').val();
-		var a12=$('input[name=a12]').val();
-		var a21=$('input[name=a21]').val();
+		var a11=$('#form1 input[name=a11]').val();
+		var a22=$('#form1 input[name=a22]').val();
+		var a12=$('#form1 input[name=a12]').val();
+		var a21=$('#form1 input[name=a21]').val();
 		var name_regex = /^[a-zA-Z0-9_]{1,8}$/;
 		//console.log('the name is',name);
 		//check for correct name characters
@@ -109,6 +109,7 @@ socket.on('gotcha',function(data){
  		 		 	 primary:"ui-icon-grip-solid-horizontal"
  		 		 	}
  		 });
+ 		  //define dialogue
 		$('#dialog').dialog(
 			{
 				width:400,
@@ -116,6 +117,15 @@ socket.on('gotcha',function(data){
 				autoOpen:false
 			}
 		);
+		//edit dialogue
+		$('#dialog_edit').dialog(
+			{
+				width:400,
+				height:300,
+				autoOpen:false
+			}
+		);
+		
 		$('#button_define').click(function(){
 			$('#dialog').dialog('open');
 			$('#tip').html("<p style='color:red; font-size:small'>All fields are mandatory</p>");
@@ -156,14 +166,25 @@ socket.on('gotcha',function(data){
 			console.log(selectedItem);
 			
 			if(selectedItem!=-1){
+			//emit the event to get selected items attributes
 			socket.emit('edit',selectedItem);
-			}
+			
+			//catch the servers response with data
+			socket.on('editedMatrix',function(spec){
+				console.log(spec);
+				$('#dialog_edit').dialog('open');
+				$('#tip').html("<p style='color:red; font-size:small'>All fields are mandatory</p>");
+				$('#form2 input[name=a11]').val(spec.a11);
+				$('#form2 input[name=a12]').val(spec.a12);
+				$('#form2 input[name=a21]').val(spec.a21);
+				$('#form2 input[name=a22]').val(spec.a22);
 				
+			});
+
+			}	
 		});
 		//events coming from the server
-		socket.on('editedMatrix',function(spec){
-				console.log(spec);
-		});
+		
 
 });
 </script>
@@ -198,7 +219,7 @@ socket.on('gotcha',function(data){
 	<button id='equal'>X</button>
 	</div>
 </div>
-<! onsubmit='return Validate(this);'>
+<! this is the define dialog>
 <div id='dialog' title='Define New Matrix'>
 	<form name='form1' id='form1'>
 	<fieldset>
@@ -218,5 +239,25 @@ socket.on('gotcha',function(data){
 	</form>
 <p id='tip' style='color:red;'><i>All fields are required</i></p>
 </div>
+
+<! this is the edit dialog>
+<div id='dialog_edit'>
+	<form name='form2' id='form2'>
+	<fieldset>
+		<label for="a11">a11</label>
+		<input type="text" name='a11' id='a11' class='whitepanes number-field'><br>
+		<label for="a22">a22</label>
+		<input type="text" name='a22' id='a22' class='whitepanes number-field'><br>
+		<label for="a12">a12</label>
+		<input type="text" name='a12' id='a12' class='whitepanes number-field'><br>
+		<label for="a21">a21</label>
+		<input type="text" name='a21' id='a21' class='whitepanes number-field'><br>
+		<button id='editsubmit_button'>OK</button>
+		<button id='editcancel_button'>cancel</button>
+	</fieldset>
+	</form>
+<p id='tip' style='color:red;'><i>All fields are required</i></p>
+</div>
+
 </body>
 </html>
