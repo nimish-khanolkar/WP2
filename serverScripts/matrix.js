@@ -76,7 +76,7 @@ Matrix.prototype.multiply=function(spec){
 				result.setData(i,j, temp);
 			}
 		}
-		//add code here for matrix multiplication
+		
 		return result;
 	}
 	else return false;
@@ -107,11 +107,11 @@ alpha2=alpha2||1;
 
 module.exports = Matrix ;
 // var spec = {rows:2,cols:3};
-// var spec1 = {rows:3, cols:5};
-// var spec2={rows:3,cols:5};
+ //var spec1 = {rows:3, cols:5};
+ //var spec2={rows:3,cols:5};
 // var mat1 = new Matrix(spec);
-// var mat2 = new Matrix(spec1);
-// var mat3 = new Matrix(spec2);
+ //var mat2 = new Matrix(spec1);
+ //var mat3 = new Matrix(spec2);
 // mat1.setData(1,2,5.333);
 // mat2.setData(2,1,0.1);
 // mat2.setData(2,1,0.1);
@@ -124,5 +124,5 @@ module.exports = Matrix ;
 // mat3.displayMatrix();
 // console.log("mat4");
 // mat4.displayMatrix();
-// 
-// //mat1.displayMatrix();
+//mat3.multiply(mat2);
+// //mat1.displayMatrix();	
