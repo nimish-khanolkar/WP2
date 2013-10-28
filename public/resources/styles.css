@@ -76,6 +76,7 @@ li { cursor: pointer; }
 .white_panes
 {
 	background-color:white;
+	color:black;	
 }
 #result_container
 {
@@ -118,6 +119,24 @@ li { cursor: pointer; }
 	position:absolute;
 	top:4px;
 	left:110px;
+}
+#bracket_open
+{
+	position:absolute;
+	top:4px;
+	left:160px;
+}
+#bracket_close
+{
+	position:absolute;
+	top:4px;
+	left:210px;
+}
+#createExpression
+{
+	position:absolute;
+	top:4px;
+	left:260px;
 }
 .number-field
 {

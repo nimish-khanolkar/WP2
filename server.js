@@ -4,6 +4,7 @@ url = require("url"),
 fs = require("fs"),
 mime = require("mime"),
 matrix = require("./serverScripts/matrix.js"),
+processor = require("./serverScripts/processExpression.js"),
 io = require("socket.io").listen(server);
 server.listen(3000);
 var homepath = ".";
@@ -125,6 +126,21 @@ function handler (req, res){
    		   		   	   console.log('Matrix not found!!');
    		   		}
    		   		
+   		   });
+   		   
+   		   socket.on('calculate',function(exp){
+   		   	var result = processor.processExpression(exp,listofMatrices);
+   		   	var resultMatrix = processor.getMatrix(result);
+   		   	resultMatrix.name = 'result';
+   		   	
+   		   	console.log('after solution ');
+   		   	resultMatrix.displayMatrix();
+   		   	var spec = convertMatrixtoSpec(resultMatrix);
+   		   	spec.status='OK';
+   		   	console.log('Converted matrix spec '+spec.a11+"  "+spec.a22+"  "+spec.a12);
+   		   	socket.emit('result',spec);
+   		   		 
+   		   		   
    		   });
    
    });

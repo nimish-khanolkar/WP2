@@ -1,28 +1,10 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//@Nimish prabhukhanolkar 27th oct 2013                                                                              //
+//This module can take in expression array which have only one heirarchy of brackets nested and solve the expression //
+//matrices need to be defined in listofMatrices                                                                      //
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 var matrix = require('./matrix.js');
-//creating database to operate///////////////////////
-var spec1 = {rows:2 , cols:2};
-var a1 = new matrix({name:'a1'});
-a1.setData(0,0,10);
-
-var spec2 = {rows:2 , cols:2};
-var a2 = new matrix({name:'a2'});
-a2.setData(0,0,0.5);
-
-var spec3 = {rows:2 , cols:2};
-var a3 = new matrix({name:'a3'});
-
-var spec4 = {rows:2 , cols:2};
-var a4 = new matrix({name:'a4'});
-
-var listofMatrices = [];
-
-listofMatrices.push(a1);
-listofMatrices.push(a2);
-listofMatrices.push(a3);
-listofMatrices.push(a4);
-
-var expressionarray = ['a1','X','a2','+','(','a2','X','a1','+','a4',')'];
-//a1*a2*(a2+a1)
+var listofMatrices=[];
 //////////////////////////////////////////////////////
 var doMultiplication=function(op1,op2){
    var result = op1.multiply(op2);
@@ -54,8 +36,14 @@ var displaylistofMatrices = function(){
    console.log(listofMatrices[i].name+'\t');
 }
 }
-
-var getMatrix = function(name){
+var getMatrix_local = function(name){
+  for(var i = 0;i < listofMatrices.length ; i++){
+    if(listofMatrices[i].name == name)  
+    return listofMatrices[i];
+  }
+  return false;
+}
+exports.getMatrix = function(name){
   for(var i = 0;i < listofMatrices.length ; i++){
     if(listofMatrices[i].name == name)  
     return listofMatrices[i];
@@ -74,7 +62,7 @@ var op1,op2,result;
     if((indexOfX - 1)>=0)
       {
 	  var op1name = expressionarray[indexOfX-1];
-	  op1 = getMatrix(op1name);
+	  op1 = getMatrix_local(op1name);
 	  if(!op1)
 	    return 'op1 matrix with the given name was not found';
       }
@@ -84,7 +72,7 @@ var op1,op2,result;
       if((indexOfX + 1)<=(expressionarray.length-1)){
       
 	  var op2name = expressionarray[indexOfX+1];
-	  op2 = getMatrix(op2name);
+	  op2 = getMatrix_local(op2name);
 	  if(!op2)
 	    return 'op2 matrix with the given name was not found';
       }
@@ -118,7 +106,7 @@ var op1,op2,result;
     if((indexOfplus - 1)>=0)
       {
 	  var op1name = expressionarray[indexOfplus-1];
-	  op1 = getMatrix(op1name);
+	  op1 = getMatrix_local(op1name);
 	  if(!op1)
 	    return 'op1 matrix with the given name was not found';
       }
@@ -128,7 +116,7 @@ var op1,op2,result;
       if((indexOfplus + 1)<=(expressionarray.length-1)){
       
 	  var op2name = expressionarray[indexOfplus+1];
-	  op2 = getMatrix(op2name);
+	  op2 = getMatrix_local(op2name);
 	  if(!op2)
 	    return 'op2 matrix with the given name was not found';
       }
@@ -261,11 +249,18 @@ var processFullExpression = function(exp){
 		return exp;
 }
 
-var testexp = ['a','(','b','(','c',')',')'];
+//this is the exposed function to run this module
+exports.processExpression = function(expression,list){
+	listofMatrices = list;
+	var result = processFullExpression(expression);	
+	return result;
+	
+}
+//var testexp = ['a','(','b','(','c',')',')'];
        // processExpressionWithoutBrackets
-var a = processFullExpression(expressionarray);	
-var resultmat = getMatrix(a);
-resultmat.displayMatrix();
+//var a = processFullExpression(expressionarray);	
+//var resultmat = getMatrix_local(a);
+//resultmat.displayMatrix();
 //var brac = getInnerBracketLocation(textexp);
 //console.log('testing getinnerbracketlocation ' + brac.bracketsOK+" "+brac.end);
 //var answer = processFullExpression(testexp);

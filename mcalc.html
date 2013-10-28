@@ -96,6 +96,7 @@ socket.on('gotcha',function(data){
 	}); */
 
  $(document).ready(function(){
+ 		 //definition of UI objects
  		 //define shadow
  		 $('#calc-container').shadow('raised');	 
  		 //define the "Define" "Edit" and "Help" buttons
@@ -122,6 +123,21 @@ socket.on('gotcha',function(data){
  		 		 	 primary:"ui-icon-grip-solid-horizontal"
  		 		 	}
  		 });
+ 		   $('#bracket_open').button({
+ 		 		 text:'(',
+ 		 		 
+ 		 });
+ 		    $('#bracket_close').button({
+ 		 		 text:')',
+ 		 		 
+ 		 });
+ 		     $('#createExpression').button({
+ 		     		     text:false,
+ 		 		 icons:{
+ 		 		 	 primary:" ui-icon-arrowreturnthick-1-n"
+ 		 		 	}
+ 		 		
+ 		 });
  		  //define dialogue
 		$('#dialog').dialog(
 			{
@@ -139,6 +155,8 @@ socket.on('gotcha',function(data){
 			}
 		);
 		
+		
+		///////////behavior of objects
 		$('#button_define').click(function(){
 			$('#dialog').dialog('open');
 			$('#dialog_tip').html("<p style='color:red; font-size:small'>All fields are mandatory</p>");
@@ -236,9 +254,62 @@ socket.on('gotcha',function(data){
 					$('#dialog_edit').dialog('close');
 				}
 		});
+		//code for calculation string begins
+		var expression = [];
+		$('#multiply').click(function(){
 		
+				expression.push('X');
+				$('#display_pane p').append('X');
+		});
+		$('#add').click(function(){
 		
-
+				expression.push('+');
+				$('#display_pane p').append('+');
+		});
+		$('#bracket_open').click(function(){
+		
+				expression.push('(');
+				$('#display_pane p').append('(');
+		});
+		$('#bracket_close').click(function(){
+		
+				expression.push(')');
+				$('#display_pane p').append(')');
+		});
+		$('#createExpression').click(function(){
+			//code to add selected list elements to display pane and expression array	
+			var selectedItem = $('#selectable .ui-selected');
+			var selectedText = selectedItem.text();
+			//console.log('You selected '+selectedText);
+			var index = $('#selectable li').index(selectedItem);
+			expression.push(selectedText);
+				$('#display_pane p').append(selectedText);
+			
+		});
+		$('#equal').click(function(){
+				if(expression.length==0)
+					alert("First Create an Expression");
+				else{
+				//submit expression to server
+				socket.emit('calculate',expression);
+				socket.on('result',function(mat){
+						//mat would be the result matrix
+						expression.length=0;
+						$('#display_pane p').text('');
+						if(mat.status=='OK'){
+							$('#result_container #result').text("");
+							$('#result_container #result').append(mat.a11+"      "+mat.a12 + "<br>");
+							$('#result_container #result').append(mat.a21+"      "+mat.a22 + "<br>");
+						}
+						else
+							$('#result_container #result').append(mat.error+"<br>");
+					});
+					
+				}
+				
+			
+		});
+		
 });
 </script>
 <div id='calc-container' class='ui-widget ui-corner-all'>
@@ -257,19 +328,24 @@ socket.on('gotcha',function(data){
 	<! Display Container div starts>
 	<div id='display_container' class='ui-widget-content'>
 		<div id='display_pane' class='white_panes'>
+		<p></p>
 		</div>
 	</div>
 	<! results container div starts>
 	<div id='result_container' class='ui-widget-content'>
 		<div id='result_pane' class='white_panes'>
-		<p> result container</p>
+		<p> &nbsp&nbsp<b>Results:</b></p>
+		<p id='result'></p>
 		</div>
 	</div>
 	<! operations pane starts here>
 	<div id='op_bar' class='ui-widget-content'>
-	<button id='multiply'>X</button>
-	<button id='add'>X</button>
-	<button id='equal'>X</button>
+	<button id='multiply'>Multiply</button>
+	<button id='add'>Add</button>
+	<button id='equal'>Equals</button>
+	<button id='bracket_open'>(</button>
+	<button id='bracket_close'>)</button>
+	<button id='createExpression'>Add Matrix to Calc Bar</button>
 	</div>
 </div>
 <! this is the define dialog>
